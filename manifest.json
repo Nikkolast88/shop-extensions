@@ -1,0 +1,26 @@
+{
+  "name": "shop extension",
+  "description": "Shop Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "shop.html",
+    "default_icon": "shop.png"
+  },
+  "permissions": ["tabs", "activeTab", "scripting", "webRequest"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/jquery-3.7.1.min.js", "scripts/content-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["<all_urls>"]
+    }]
+}
