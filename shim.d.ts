@@ -6,5 +6,7 @@ declare module 'webext-bridge' {
     // see https://github.com/antfu/webext-bridge#type-safe-protocols
     'tab-prev': { title: string | undefined }
     'get-current-tab': ProtocolWithReturn<{ tabId: number }, { title?: string }>
+    'fromSidePanel': { data: { label: string, total: string, form: { label: string, value: string, key: string }[] } }
+    'toSidePanel': { data: any[] }
   }
 }

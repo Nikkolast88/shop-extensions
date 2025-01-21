@@ -1,4 +1,3 @@
-import type { Tabs } from 'webextension-polyfill'
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import browser from 'webextension-polyfill'
 import { currentTabId } from '~/logic/storage'
@@ -42,4 +41,24 @@ browser.tabs.onCreated.addListener(async ({ id }) => {
 onMessage('open-side-panel', async () => {
   // @ts-expect-error missing types
   browser.sidePanel.open({ tabId: currentTabId.value })
+})
+
+onMessage('contentSendToSidePanel', async ({ data }) => {
+  browser.runtime.sendMessage({ action: 'toSidePanel', data })
+})
+
+// to content script message
+// @ts-expect-error missing types
+browser.runtime.onMessage.addListener((message: any) => {
+  if (message.action === 'sidePanelSendToContent') {
+    // 获取当前活动的标签页
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      if (tabs.length > 0) {
+        const tabId = tabs[0].id as number
+
+        // 将消息转发给 content-script
+        sendMessage('fromSidePanel', { data: message.data }, { context: 'content-script', tabId })
+      }
+    })
+  }
 })
